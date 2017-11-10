@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewEncapsulation, ElementRef } from '@angular/core';
 import { CoursesService } from '../courses.service';
 import { AutoGrowDirective } from '../auto-grow.directive';
 
@@ -15,11 +15,19 @@ export class CoursesComponent implements OnInit {
   title = "The title of the course page";
   courses;
 
-  constructor(coursesService: CoursesService) {
+  constructor(private elementRef:ElementRef, public coursesService: CoursesService) {
     this.courses = coursesService.getCourses();
+  }
+  ngAfterViewInit() {
+    this.elementRef.nativeElement.querySelector('button').addEventListener('click', this.onAddCourse.bind(this));
   }
 
   ngOnInit() {
+  }
+  
+  onAddCourse() {
+    this.coursesService.addCourse(this.elementRef.nativeElement.querySelector('input').value);
+    this.elementRef.nativeElement.querySelector('input').value = "";
   }
 
 }
